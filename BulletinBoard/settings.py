@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1 # Setting for allauth
-
+CKEDITOR_PLUGIN_PATH = os.path.join(BASE_DIR, 'static', 'ckeditor', 'plugins')
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Full',
@@ -58,13 +58,14 @@ CKEDITOR_CONFIGS = {
         'width': 'auto',
         'extraPlugins': ','.join([
             'uploadimage',  # Плагин для загрузки изображений
-            'uploadfile',
-            'embed',        # Плагин для вставки медиа-контента
+            'uploadfile',   # Плагин для загрузки файлов
+            'embed',         # Плагин для вставки медиа-контента
             'embedbase',
             'autolink',
-            'font',         # Плагин для управления шрифтами
-            'colorbutton',  # Плагин для изменения цвета текста и фона
-            'youtube',   # Плагин для загрузки файлов (включая видео)
+            'font',          # Плагин для управления шрифтами
+            'colorbutton',   # Плагин для изменения цвета текста и фона
+            'youtube',       # Плагин для вставки YouTube видео
+            'html5video',    # Плагин для вставки HTML5 видео
         ]),
         'filebrowserUploadUrl': '/ckeditor/upload/',  # URL для загрузки файлов
         'filebrowserBrowseUrl': '/ckeditor/browse/',  # URL для выбора файлов
@@ -73,9 +74,12 @@ CKEDITOR_CONFIGS = {
             ['Font', 'FontSize'],                      # Шрифт и размер шрифта
             ['TextColor', 'BGColor'],                  # Цвет текста и фона
             ['Image', 'Table', 'Link', 'Unlink', 'Anchor'],
-            ['Embed', 'MediaEmbed', 'YouTube'],
-            ['UploadFile'],
-            ['Source'],
+            ['Embed'],                                # Вставка эмбед-кода
+            ['MediaEmbed'],                           # Вставка медиа контента
+            ['YouTube'],                              # Вставка YouTube видео
+            ['Html5Video'],                           # Вставка HTML5 видео
+            ['UploadFile'],                           # Загрузка файлов
+            ['Source'],                               # Просмотр исходного кода
         ],
         'font_names': 'Arial; Comic Sans MS; Courier New; Georgia; Tahoma; Times New Roman; Verdana',  # Список доступных шрифтов
         'fontSize_sizes': '12/12px;14/14px;16/16px;18/18px;24/24px;36/36px;48/48px;',  # Доступные размеры
@@ -208,4 +212,4 @@ DEFAULT_FROM_EMAIL = "anim.news@yandex.ru"
 SERVER_EMAIL = "anim.news@yandex.ru"
 MANAGERS = (('AnimeNews', 'anim.news.@yandex.ru'),
             ('example', 'example@yandex.ru'))
-ADMINS = [('AnimeNews', 'anim.news.@yandex.ru')] 
+ADMINS = [('AnimeNews', 'anim.news.@yandex.ru')]
