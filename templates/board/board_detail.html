@@ -1,0 +1,57 @@
+{% extends 'default.html' %}
+{% load i18n %}
+{% block header %}
+{% endblock header %}
+{% block side-left %}
+    <section>
+        <h1>{% trans 'Categories' %}</h1>
+    </section>
+    <section>
+        <ul class="categories">
+        {% for category in categories %}
+            <li class="category">
+                <a href="#">{{category.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+{% endblock side-left %}
+{% block content %}
+    <article class="card_board_detail">
+        <div class="header_board">
+            <h1 class="card_title_detail">
+                <a href="{% url 'BoardDetail' board.pk board.slug %}">{{board.title}}</a>
+            </h1>
+            <span class="card_author_detail">
+                {{ board.author }} - {{ board.created_date }}
+            </span>
+            <hr>
+        </div>
+        <div class="card_media_detail">
+            <img src="{{ board.image.url }}" alt="Board Image">
+            <video src="{{ board.video.url }}" controls></video>
+        </div>
+        <p class="title_description_detail">
+            {{board.text|truncatechars:100}}
+        </p>
+        <button>{% trans 'reply' %}</button><br>
+        <span>{% trans 'Category' %}: {{ board.category }}</span>
+    </article >
+{% endblock content %}
+{% block side-right %}
+    <section>
+        <h1>{% trans 'News' %}</h1>
+    </section>
+    <section class="posts">
+        <ul>
+        {% for post in posts %}
+            <li>
+                <a href="#">{{ post.author }}</a>
+                <h3><a href="#">{{ post.title }}</a></h3>
+                <p>{{ post.text|truncatechars:100 }}</p>
+            </li>
+        {% endfor %}
+            
+        </ul>
+    </section>
+{% endblock side-right %}

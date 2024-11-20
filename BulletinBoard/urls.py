@@ -18,9 +18,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from board import views
+
+router = routers.DefaultRouter()
+router.register(r'boards', views.BoardViewset)
+router.register(r'users', views.UserViewSet)
+router.register(r'categories', views.CategoryViewset)
+router.register(r'responsesboards', views.ResponseViewset)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('/', include('board.urls')),
+    path('', include('board.urls')),
+    path('api/', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path("accounts/", include("allauth.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

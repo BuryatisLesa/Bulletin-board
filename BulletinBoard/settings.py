@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,10 +38,52 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Setting for allauth
     'board',
+    'rest_framework',
+    'accounts',
+    'allauth',  # Setting for allauth
+    'allauth.account',  # Setting for allauth
+    'allauth.socialaccount',  # Setting for allauth
     'ckeditor',
-    'ckeditor_uploader',
+    'ckeditor_uploader', 
 ]
+
+SITE_ID = 1 # Setting for allauth
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',
+        'height': 300,
+        'width': 'auto',
+        'extraPlugins': ','.join([
+            'uploadimage',  # Плагин для загрузки изображений
+            'uploadfile',
+            'embed',        # Плагин для вставки медиа-контента
+            'embedbase',
+            'autolink',
+            'font',         # Плагин для управления шрифтами
+            'colorbutton',  # Плагин для изменения цвета текста и фона
+            'youtube',   # Плагин для загрузки файлов (включая видео)
+        ]),
+        'filebrowserUploadUrl': '/ckeditor/upload/',  # URL для загрузки файлов
+        'filebrowserBrowseUrl': '/ckeditor/browse/',  # URL для выбора файлов
+        'toolbar_Full': [
+            ['Bold', 'Italic', 'Underline', 'Strike'],  # Основные стили текста
+            ['Font', 'FontSize'],                      # Шрифт и размер шрифта
+            ['TextColor', 'BGColor'],                  # Цвет текста и фона
+            ['Image', 'Table', 'Link', 'Unlink', 'Anchor'],
+            ['Embed', 'MediaEmbed', 'YouTube'],
+            ['UploadFile'],
+            ['Source'],
+        ],
+        'font_names': 'Arial; Comic Sans MS; Courier New; Georgia; Tahoma; Times New Roman; Verdana',  # Список доступных шрифтов
+        'fontSize_sizes': '12/12px;14/14px;16/16px;18/18px;24/24px;36/36px;48/48px;',  # Доступные размеры
+    },
+}
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +93,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Settings for allauth
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'BulletinBoard.urls'
@@ -57,7 +102,8 @@ ROOT_URLCONF = 'BulletinBoard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'accounts', 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,6 +115,20 @@ TEMPLATES = [
         },
     },
 ]
+
+# Setting for allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Setting for allauth
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 
 WSGI_APPLICATION = 'BulletinBoard.wsgi.application'
 
@@ -107,6 +167,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'ru'
+LANGUAGES = [('ru', 'Русский'), ('en-us', 'English')]
 
 TIME_ZONE = 'UTC'
 
@@ -119,6 +180,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -128,19 +192,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ckeditor
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_ALLOW_NONIMAGE_FILES = True
-CKEDITOR_IMAGE_BACKEND = "pillow"
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-        'extraPlugins': ','.join([
-            'media',  # Плагин для работы с медиафайлами
-        ]),
-        'filebrowserUploadUrl': '/ckeditor/upload/',
-        'filebrowserUploadMethod': 'form',
-    },
-}
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
+# email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "anim.news@yandex.ru"
+EMAIL_HOST_PASSWORD = "jzfjrtppxabamvrk"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = "anim.news@yandex.ru"
+SERVER_EMAIL = "anim.news@yandex.ru"
+MANAGERS = (('AnimeNews', 'anim.news.@yandex.ru'),
+            ('example', 'example@yandex.ru'))
+ADMINS = [('AnimeNews', 'anim.news.@yandex.ru')] 
