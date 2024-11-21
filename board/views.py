@@ -34,7 +34,7 @@ def board_detail(request, pk, slug):
     categories = Category.objects.all()
     posts = Post.objects.all()
     context = {
-        'board': boards,
+        'board  ': boards,
         'categories': categories,
         'posts': posts,
     }

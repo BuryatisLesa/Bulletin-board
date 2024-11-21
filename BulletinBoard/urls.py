@@ -30,10 +30,10 @@ router.register(r'responsesboards', views.ResponseViewset)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('board.urls')),
+    path('accounts/', include('accounts.urls')),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('i18n/', include('django.conf.urls.i18n')),
-    path("accounts/", include("allauth.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 

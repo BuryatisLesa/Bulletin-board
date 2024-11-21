@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-85a-5djgq%(7n3a(7&o-^9^fua@^6raflfodvym4mv_#+1a-vr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,54 +38,72 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',  # Setting for allauth
     'board',
     'rest_framework',
     'accounts',
-    'allauth',  # Setting for allauth
-    'allauth.account',  # Setting for allauth
-    'allauth.socialaccount',  # Setting for allauth
     'ckeditor',
     'ckeditor_uploader', 
 ]
-
-SITE_ID = 1 # Setting for allauth
 CKEDITOR_PLUGIN_PATH = os.path.join(BASE_DIR, 'static', 'ckeditor', 'plugins')
+
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Full',
-        'height': 300,
-        'width': 'auto',
-        'extraPlugins': ','.join([
-            'uploadimage',  # Плагин для загрузки изображений
-            'uploadfile',   # Плагин для загрузки файлов
-            'embed',         # Плагин для вставки медиа-контента
-            'embedbase',
-            'autolink',
-            'font',          # Плагин для управления шрифтами
-            'colorbutton',   # Плагин для изменения цвета текста и фона
-            'youtube',       # Плагин для вставки YouTube видео
-            'html5video',    # Плагин для вставки HTML5 видео
-        ]),
-        'filebrowserUploadUrl': '/ckeditor/upload/',  # URL для загрузки файлов
-        'filebrowserBrowseUrl': '/ckeditor/browse/',  # URL для выбора файлов
-        'toolbar_Full': [
-            ['Bold', 'Italic', 'Underline', 'Strike'],  # Основные стили текста
-            ['Font', 'FontSize'],                      # Шрифт и размер шрифта
-            ['TextColor', 'BGColor'],                  # Цвет текста и фона
-            ['Image', 'Table', 'Link', 'Unlink', 'Anchor'],
-            ['Embed'],                                # Вставка эмбед-кода
-            ['MediaEmbed'],                           # Вставка медиа контента
-            ['YouTube'],                              # Вставка YouTube видео
-            ['Html5Video'],                           # Вставка HTML5 видео
-            ['UploadFile'],                           # Загрузка файлов
-            ['Source'],                               # Просмотр исходного кода
+        'skin': 'moono',
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
         ],
-        'font_names': 'Arial; Comic Sans MS; Courier New; Georgia; Tahoma; Times New Roman; Verdana',  # Список доступных шрифтов
-        'fontSize_sizes': '12/12px;14/14px;16/16px;18/18px;24/24px;36/36px;48/48px;',  # Доступные размеры
-    },
+        'toolbar_YourCustomToolbarConfig': [
+            {'name': 'document', 'items': ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll']},
+            {'name': 'forms',
+             'items': ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton',
+                       'HiddenField']},
+            '/',
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
+            {'name': 'paragraph',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl',
+                       'Language']},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'insert',
+             'items': ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe', ]},
+            '/',
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'tools', 'items': ['Maximize', 'ShowBlocks']},
+            {'name': 'about', 'items': ['About']},
+            '/',  
+            {'name': 'yourcustomtools', 'items': [
+                'Preview',
+                'Maximize',
+                'Html5video',
+                'Youtube',
+            ]},
+        ],
+        'toolbar': 'YourCustomToolbarConfig', 
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'uploadimage', 
+            'div',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'autogrow',
+            'widget',
+            'lineutils',
+            'clipboard',
+            'dialog',
+            'dialogui',
+            'elementspath',
+            'html5video',
+            'youtube',
+        ]),
+    }
 }
 
+SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
@@ -97,8 +115,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Settings for allauth
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'BulletinBoard.urls'
@@ -106,8 +122,7 @@ ROOT_URLCONF = 'BulletinBoard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'),
-                 os.path.join(BASE_DIR, 'accounts', 'templates', 'allauth')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,20 +134,6 @@ TEMPLATES = [
         },
     },
 ]
-
-# Setting for allauth
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
-# Setting for allauth
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-
 
 WSGI_APPLICATION = 'BulletinBoard.wsgi.application'
 
@@ -188,6 +189,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -199,8 +202,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
 # email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "anim.news@yandex.ru"

@@ -30,55 +30,21 @@
                     <li><a class="text-navigation" href="#">{% trans "Categories" %}</a></li>
                     <li><a class="text-navigation" href="#">{% trans "News" %}</a></li>
                 </ul>
-                <!--Начало блока локализации-->
-                <span class="language">
-                    <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
-                        <input type="hidden" name="next" value="{{ redirect_to }}">
-                        {% get_current_language as LANGUAGE_CODE %}
-                        <select name="language" id="">
-                            {% get_available_languages as LANGUAGES %} <!-- получаем языки -->
-                            {% get_language_info_list for LANGUAGES as languages %} <!-- Помещаем их в список languages -->
-                            {% get_current_language as LANGUAGE_CODE %}
-                            {% for language in languages %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
-                                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
-                                    {{ language.name_local }} - {{ language.code }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <input type="submit" value="set">
-                    </form>
-                </span>
-                <span class="timezone">
-                    {% get_current_timezone as TIME_ZONE %}
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <label for="timezone">Time zone:</label>
-                        <select name="timezone">
-                            {% for tz in timezones %}
-                            <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="submit" value="Set">
-                    </form>
-                    {{ TIME_ZONE }}
-                    {{ current_time|timezone:TIME_ZONE }} <!-- Отображаем время в выбранном часовом поясе  -->
-                </span>
-                <!--Конец блока локализации-->
             </nav>
             <!--Конец панели навигации-->
             {% block nav %}
-            <div class="user-container">
-                <ul>
-                    {% if request.user.is_authenticated %}
-                    <li><a class="user" href="#">{% trans "Profile" %}</a></li>
-                    <li><a class="user" href="#">{% trans "Logout" %}</a></li>
-                    {% else %}
-                    <li><a class="user" href="{% url 'account_login' %}">{% trans "Login" %}</a></li>
-                    <li><a class="user" href="{% url 'account_signup' %}">{% trans "SignUp" %}</a></li>
-                    {% endif %}
-                </ul>
-            </div>
             {% endblock nav %}
+            {% block user_nav %}
+            <ul>
+                {% if request.user.is_authenticated %}
+                <li><a class="user" href="{% url 'accounts_profile' user.pk %}">{% trans "Profile" %}</a></li>
+                <li><a class="user" href="{% url 'accounts_logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                <li><a class="user" href="{% url 'accounts_login' %}">{% trans "Login" %}</a></li>
+                <li><a class="user" href="{% url 'accounts_signup' %}">{% trans "SignUp" %}</a></li>
+                {% endif %}
+            </ul>
+            {% endblock user_nav %}
         <!--Конец пользовательской навигации-->
         </header>
         <main class="main">

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from time import time
 from slugify import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse
 
 
 # creating slug
@@ -13,6 +14,7 @@ def gen_slug(string):
 
 # model for Bulletin Board
 class Board(models.Model):
+    '''fields =[author, title, text, category, created_date, slug, image, video]'''
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=150, blank=False)
     text = RichTextUploadingField()
@@ -37,10 +39,14 @@ class Board(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return
+        return reverse('BoardDetail', kwargs={'slug': self.slug, 'pk': self.pk})
 
 
 class Category(models.Model):
+    '''fields = [name, slug, descriptions, image]'''
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
     name = models.CharField(max_length=150)
     slug = models.SlugField(
         max_length=255, unique=True, db_index=True, verbose_name="URL",
@@ -53,15 +59,17 @@ class Category(models.Model):
         return f'{self.name}'
 
     def get_absolute_url(self):
-        pass
+        return reverse('CategoryDetail', kwargs={'slug': self.slug, 'pk': self.pk})
 
     def save(self, *args, **kwargs):
         # save in DB to slug
+        self.add_main_categories()
         self.slug = gen_slug(self.name)
         super().save(*args, **kwargs)
 
 
 class ResponseBoard(models.Model):
+    '''fields = [user, board]'''
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='response')
     board = models.ForeignKey('Board', on_delete=models.CASCADE,
@@ -71,10 +79,11 @@ class ResponseBoard(models.Model):
         return f'{self.user} - {self.board}'
 
     def get_absolute_url(self):
-        pass
+        return reverse('PageResponses', kwargs={'slug': self.slug, 'pk': self.pk})
 
 
 class Post(models.Model):
+    '''fields = [author, title, text, created_date, image, video, slug]'''
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=150, blank=False)
     text = models.TextField()
@@ -90,6 +99,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.author} - {self.title}'
+    
+    def get_absolute_url(self):
+        return reverse('PostDetail', kwargs={'slug': self.slug, 'pk': self.pk})
 
     def save(self, *args, **kwargs):
         # save in DB to slug
