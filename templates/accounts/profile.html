@@ -1,10 +1,28 @@
 {% extends 'default.html' %}
+{% load i18n %}
 {% block title %}
+Profile
 {% endblock title %}
 {% block side-left %}
+    <section>
+        <h1>{% trans 'Categories' %}</h1>
+    </section>
+    <ul class="categories">
+        {% for category in categories %}
+            <li class="category"><a href="#">{{category.name}}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock side-left %}
 {% block content %}
-You is sussesfull registred
+    <div>
+        <ul>
+            <li>Username: {{ user.username }}</li>
+            <li>Email: {{ user.email }}</li>
+            <li><a href="{% url 'change_password' user.pk %}">Change password</a></li>
+            <li><a href="#">My replay</a></li>
+            <li><a href="#">My advertisements</a></li>
+        </ul>
+    </div>
 {% endblock content %}
 {% block side-right %}
 {% endblock side-right %}

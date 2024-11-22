@@ -3,13 +3,13 @@
 {% block content %}
   <div class="confirmation-container">
     <h2>Подтверждение email</h2>
-    <form method="post">
+    <form class="form-group" method="post">
       {% csrf_token %}
       <label for="email">Email:</label>
-      <input type="email" name="email" required>
+      <input class="form-control" type="email" name="email" required>
       <label for="otp_code">Код подтверждения:</label>
-      <input type="text" name="otp_code" required>
-      <button type="submit" class="btn btn-primary">Подтвердить</button>
+      <input form-control type="text" name="otp_code" required>
+      <button type="submit" class="green-button">Подтвердить</button>
     </form>
   </div>
 {% endblock %}

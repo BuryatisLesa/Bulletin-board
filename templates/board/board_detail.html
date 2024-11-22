@@ -27,10 +27,11 @@
             </span>
             <hr>
         </div>
-        <div class="card_media_detail">
-            <img src="{{ board.image.url }}" alt="Board Image">
-            <video src="{{ board.video.url }}" controls></video>
-        </div>
+        {% if board.image %}
+            <div class="card_media_detail">
+                <img src="{{ board.image.url }}" alt="Board Image">
+            </div>
+        {% endif %}
         <p class="title_description_detail">
             {{board.text|truncatechars:100}}
         </p>

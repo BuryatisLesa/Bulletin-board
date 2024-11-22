@@ -3,27 +3,32 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.forms import AuthenticationForm
 import random
 
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "Email"}),
         label="Email",
-        required=True,
-        widget=forms.EmailInput(attrs={"style": "color: black;"}))
+        required=True,)
     username = forms.CharField(
-        label='Username',
-        required=True,
-        widget=forms.TextInput(attrs={"style": "color: black;"}))
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Username"}),
+        label='Username',)
     password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Password"}),
         label='Password',
-        required=True,
-        widget=forms.PasswordInput(attrs={"style": "color: black;"})
-    )
+        required=True,)
     password2 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Confirm password"}
+            ),
         label='Confirm Password',
-        required=True,
-        widget=forms.PasswordInput(attrs={"style": "color: black;"}))
+        required=True,)
 
     class Meta:
         model = User
@@ -61,3 +66,54 @@ class SignUpForm(UserCreationForm):
                 recipient_list=[user.email],
             )
             return user
+
+
+class ChangePasswordForm(forms.Form):
+    password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control", "placeholder": "Enter new password"}),
+        required=True,
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control", "placeholder": "Confirm new password"}
+                ),
+        required=True,
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user  # Передаем текущего пользователя в форму
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        if password1 != password2:
+            raise forms.ValidationError("Passwords do not match!")
+        return cleaned_data
+
+    def save(self):
+        # Save new password in DB
+        self.user.password = make_password(self.cleaned_data["password1"])
+        self.user.save()
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label="Username",
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 'placeholder': 'Enter your username'})
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control', 'placeholder': 'Enter your password'})
+                )

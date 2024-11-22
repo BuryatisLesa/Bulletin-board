@@ -63,7 +63,6 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         # save in DB to slug
-        self.add_main_categories()
         self.slug = gen_slug(self.name)
         super().save(*args, **kwargs)
 
