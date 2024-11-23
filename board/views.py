@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth.models import User
@@ -52,7 +52,7 @@ class BoardCreateView(LoginRequiredMixin, CreateView):
     template_name = 'board/board_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('BoardDetail', kwargs={'pk': self.object.pk, 'slug': self.object.slug}) # Замените на ваш URL
+        return reverse_lazy('BoardDetail', kwargs={'pk': self.object.pk, 'slug': self.object.slug})
 
     def form_valid(self, form):
         board = form.save(commit=False, user=self.request.user)
@@ -60,10 +60,31 @@ class BoardCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
-        # Добавляем дополнительные данные в контекст
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()  # Если это нужно для отображения
+        context['categories'] = Category.objects.all()
         return context
+
+
+class BoardUpdateView(LoginRequiredMixin, UpdateView):
+    raise_exception = True
+    model = Board
+    form_class = BoardCreateForm
+    template_name = 'board/board_create.html'
+
+    def get_success_url(self):
+        return reverse_lazy('BoardDetail',kwargs={'pk': self.object.pk, 'slug': self.object.slug})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+
+    def form_valid(self, form):
+        board = form.save(commit=False)
+        if board.author != self.request.user:
+            form.add_error(None, "You is edit current post.")
+            return super().form_invalid(form)
+        return super().form_valid(form)
 
 
 class CategoryListView(View):
@@ -75,6 +96,8 @@ class CategoryListView(View):
             'categories': self.queryset
         }
         return render(request, 'board/categories.html', context)
+    
+
 
 
 

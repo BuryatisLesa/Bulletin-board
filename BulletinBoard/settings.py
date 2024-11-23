@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     'ckeditor_uploader', 
 ]
 CKEDITOR_PLUGIN_PATH = os.path.join(BASE_DIR, 'static', 'ckeditor', 'plugins')
-
+CKEDITOR_RESTRICT_BY_USER = False
 CKEDITOR_CONFIGS = {
     'default': {
-        'skin': 'moono',
+        'skin': 'moono-lisa',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']
         ],
@@ -82,6 +82,8 @@ CKEDITOR_CONFIGS = {
                 'Youtube',
             ]},
         ],
+        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'filebrowserBrowseUrl': '/ckeditor/browse/',
         'toolbar': 'YourCustomToolbarConfig', 
         'tabSpaces': 4,
         'extraPlugins': ','.join([
@@ -216,3 +218,9 @@ SERVER_EMAIL = "anim.news@yandex.ru"
 MANAGERS = (('AnimeNews', 'anim.news.@yandex.ru'),
             ('example', 'example@yandex.ru'))
 ADMINS = [('AnimeNews', 'anim.news.@yandex.ru')]
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',  # Используется временный кэш
+#     }
+# }

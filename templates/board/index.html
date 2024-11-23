@@ -28,7 +28,7 @@
                 <a href="{% url 'BoardDetail' board.pk board.slug %}">{{board.title}}</a>
             </h1>
             <p class="title_description">
-                {{board.text|truncatechars:100}}
+                {{board.text|truncatechars:100|safe}}
             </p>
             <span>{% trans 'Category' %}: {{ board.category }}</span>
             </section>

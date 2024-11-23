@@ -19,10 +19,15 @@ Profile
             <li>Username: {{ user.username }}</li>
             <li>Email: {{ user.email }}</li>
             <li><a href="{% url 'change_password' user.pk %}">Change password</a></li>
-            <li><a href="#">My replay</a></li>
-            <li><a href="#">My advertisements</a></li>
         </ul>
     </div>
 {% endblock content %}
 {% block side-right %}
+<div>
+    <ul>
+        <li><a href="{% url 'BoardCreate' %}">Create at adventisment</a></li>
+        <li><a href="#">My replay</a></li>
+        <li><a href="#">My advertisements</a></li>
+    </ul>
+</div>
 {% endblock side-right %}

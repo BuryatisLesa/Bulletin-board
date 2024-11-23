@@ -15,11 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from board import views
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from ckeditor_uploader import views as ckeditor_views
 
 router = routers.DefaultRouter()
 router.register(r'boards', views.BoardViewset)
@@ -34,10 +37,16 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('i18n/', include('django.conf.urls.i18n')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    # ckeditor
+    # re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    # add images and videos only auth users(login_required)
+    re_path(r'^ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
+    re_path(r'^ckeditor/browse/', login_required(ckeditor_views.browse), name='ckeditor_browse'),
 ]
 
-# Включение статических и медиа файлов в режиме разработки
+# lock in dev
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,16 +1,16 @@
 {% extends 'default.html' %}
-{% load custom_filters %}
 {% block title %}
-Login
 {% endblock title %}
 {% block side-left %}
 {% endblock side-left %}
 {% block content %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="green-button" type="submit">Login</button>
-</form>
+    {% for category in categories %}
+    <div>
+        <h1>{{category.name}}</h1>
+        <p>{{category.descriptions}}</p>
+        <button class="green-button">Redirect</button>
+    </div>
+    {% endfor %}
 {% endblock content %}
 {% block side-right %}
 {% endblock side-right %}
