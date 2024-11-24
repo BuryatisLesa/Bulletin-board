@@ -26,6 +26,10 @@ Profile
 <div>
     <ul>
         <li><a href="{% url 'BoardCreate' %}">Create at adventisment</a></li>
+        {% if user.is_staff %}
+            <li><a href="{% url 'PostCreate' %}">Create News</a></li>
+            <li><a href="/admin">Admin Panel</a></li>
+        {% endif %}
         <li><a href="#">My replay</a></li>
         <li><a href="#">My advertisements</a></li>
     </ul>

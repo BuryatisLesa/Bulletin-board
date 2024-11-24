@@ -31,7 +31,7 @@ router.register(r'categories', views.CategoryViewset)
 router.register(r'responsesboards', views.ResponseViewset)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('', include('board.urls')),
     path('accounts/', include('accounts.urls')),
     path('api/', include(router.urls)),

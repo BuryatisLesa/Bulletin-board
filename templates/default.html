@@ -4,71 +4,88 @@
 {% load tz %}
 <html lang="en">
     <head>
+
+        <!--Start block styles-->
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="{% static 'favicon.png' %}">
+        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+        <!--End block styles-->
+
         <title>
             {% block title %}
             {% trans "Bulletin Board" %}
             {% endblock title %}    
         </title>
-        <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+        
     </head>
     <body>
         <header class="header">
+
             {% block header %}
             {% endblock header %}
-            <!--Начало панели навигации-->
+
+            <!--Start navigation panel-->
+            {% block nav %}
             <nav class="navigation">
-                <!--Начало логотипа-->
+                <!--Start block logo-->
                 <div class="logo">
                     <a class="text-logo" href="{% url 'BoardList' %}">{% trans "Bulletin Board" %}</a>
                     <span class="undeground-text">{% trans "MMORPG" %}</span>
                 </div>
-                <!--Конец логотипа-->
+                <!--End block logo-->
                 <ul>
                     <li><a class="text-navigation" href="{% url 'CategoryList' %}">{% trans "Categories" %}</a></li>
-                    <li><a class="text-navigation" href="#">{% trans "News" %}</a></li>
+                    <li><a class="text-navigation" href="{% url 'PostList' %}">{% trans "News" %}</a></li>
                 </ul>
             </nav>
-            <!--Конец панели навигации-->
-            {% block nav %}
             {% endblock nav %}
+            <!--End navigation panel-->
+
+            <!--Start block user-navigation-->
             {% block user_nav %}
             <ul>
                 {% if request.user.is_authenticated %}
-                <li><a class="user" href="{% url 'accounts_profile' user.pk %}">{% trans "Profile" %}</a></li>
-                <li><a class="user" href="{% url 'accounts_logout' %}">{% trans "Logout" %}</a></li>
+                    <li><a class="user" href="{% url 'accounts_profile' user.pk %}">{% trans "Profile" %}</a></li>
+                    <li><a class="user" href="{% url 'accounts_logout' %}">{% trans "Logout" %}</a></li>
                 {% else %}
-                <li><a class="user" href="{% url 'accounts_login' %}">{% trans "Login" %}</a></li>
-                <li><a class="user" href="{% url 'accounts_signup' %}">{% trans "SignUp" %}</a></li>
+                    <li><a class="user" href="{% url 'accounts_login' %}">{% trans "Login" %}</a></li>
+                    <li><a class="user" href="{% url 'accounts_signup' %}">{% trans "SignUp" %}</a></li>
                 {% endif %}
             </ul>
             {% endblock user_nav %}
-        <!--Конец пользовательской навигации-->
+        <!--End block user-navigation-->
+
         </header>
         <main class="main">
-            <!--Начало боковой панели-->
+
+            <!--Start side-left panel-->
             <aside class="side-left">
                 {% block side-left %}
                 {% endblock side-left %}
             </aside>
-            <!--Конец боковой панели-->
-            <!--Начало блока с контентом-->
+            <!--End side-left panel-->
+
+            <!--Start block main content-->
             <div class="content">
                 {% block content %}
                 {% endblock content %}
             </div>
-            <!--Конец блока с контентом-->
-            <di class="side-right">
+            <!--End block main content-->
+
+            <!--Start side-right panel-->
+            <div class="side-right">
                 {% block side-right %}
                 {% endblock side-right %}
             </div>
+            <!--End side-right panel-->
         </main>
-        <!--Начало цоколя =)-->
+
+        <!--Start footer block-->
         <footer class="footer">
             © {% trans "Bulletin Board" %}  
         </footer>
-        <!--Конец цоколя-->
+        <!--End footer block-->
+
     </body>
 </html>

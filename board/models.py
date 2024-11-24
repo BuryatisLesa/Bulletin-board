@@ -26,7 +26,7 @@ class Board(models.Model):
         max_length=255, unique=True, db_index=True, verbose_name="URL",
         blank=True)
     image = models.ImageField(
-        upload_to='boards/images/', null=True, blank=True)  # upload to images in board
+        upload_to='boards/images/', null=True, blank=True, default='boards/images/default_image.jpg')  # upload to images in board
     video = models.FileField(
         upload_to='boards/videos', null=True, blank=True)   # upload to video in board
 

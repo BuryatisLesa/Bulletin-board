@@ -5,59 +5,48 @@
 {% endblock header %}
 
 {% block side-left %}
-    <!--Title list categories-->
     <section>
         <h1>{% trans 'Categories' %}</h1>
-        <hr>
     </section>
-
     <!--Start section list categories-->
     <section>
         <ul class="categories">
         {% for category in categories %}
             <li class="category">
-                <a href="{% url 'BoardsInCategory' category.pk category.slug  %}">{{category.name}}</a>
+                <a href="#">{{category.name}}</a>
             </li>
         {% endfor %}
         </ul>
     </section>
     <!--End section list categories-->
-
 {% endblock side-left %}
-
 {% block content %}
-    <!--Start card-board-->
-    {% for board in boards %}
+    {% for BIC in boards_in_category %}
         <article class="card_board">
-            <!-- section info board -->
             <section class="card-left">
-                <span class="card_author">
-                    {{ board.author }} - {{ board.created_date }}
-                </span>
-                <h1 class="card_title">
-                    <a href="{% url 'BoardDetail' board.pk board.slug %}">{{board.title}}</a>
-                </h1>
-                <p class="title_description">
-                    {{board.text|truncatechars:100|safe}}
-                </p>
-                <span>{% trans 'Category' %}: {{ board.category }}</span>
-                <div><button class="green-button">{% trans 'reply' %}</button><br></div>
+            <span class="card_author">
+                {{ BIC.author }} - {{ BIC.created_date }}
+            </span>
+            <h1 class="card_title">
+                <a href="{% url 'BoardDetail' BIC.pk BIC.slug %}">{{BIC.title}}</a>
+            </h1>
+            <p class="title_description">
+                {{BIC.text|truncatechars:100|safe}}
+            </p>
+            <span>{% trans 'Category' %}: {{ BIC.category }}</span>
+            <div><button class="green-button">{% trans 'reply' %}</button><br></div>
             </section>
         {% if board.image %}
-            <!-- Section media -->
             <section class="card-right">
-            <img src="{{ board.image.url }}" alt="Board Image">
+            <img src="{{ BIC.image.url }}" alt="Board Image">
             </section>
         {% endif %}
         </article >
     {% endfor %}
-    <!--Start card-board-->
 {% endblock content %}
-
 {% block side-right %}
     <section>
         <h1>{% trans 'News' %}</h1>
-        <hr>
     </section>
     <section class="posts">
         <ul>
@@ -67,7 +56,8 @@
                 <h3><a href="{% url 'PostDetail' post.pk post.slug %}">{{ post.title }}</a></h3>
                 <p>{{ post.text|truncatechars:100 }}</p>
             </li>
-        {% endfor %} 
+        {% endfor %}
+            
         </ul>
     </section>
 {% endblock side-right %}

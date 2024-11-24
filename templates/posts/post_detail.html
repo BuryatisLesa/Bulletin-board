@@ -1,0 +1,64 @@
+{% extends 'default.html' %}
+{% load i18n %}
+{% block header %}
+{% endblock header %}
+{% block side-left %}
+    <section>
+        <h1>{% trans 'Categories' %}</h1>
+    </section>
+    <section>
+        <ul class="categories">
+        {% for category in categories %}
+            <li class="category">
+                <a href="#">{{category.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+{% endblock side-left %}
+{% block content %}
+    <article class="card_board_detail">
+        <div>
+        {% if post.author == user %}
+            <form action="{% url 'PostDelete' post.pk post.slug %}" method="post">
+                {% csrf_token %}
+                <button class="green-button" type="submit">Delete</button>
+            </form>
+        <button class="green-button" type="submit"><a href="{% url 'PostUpdate' post.pk post.slug %}">Edit</a></button>
+        </div>
+        {% endif %}
+        <div class="header_board">
+            <h1 class="card_title_detail">
+                <a href="{% url 'PostDetail' post.pk post.slug %}">{{post.title}}</a>
+            </h1>
+            <span class="card_author_detail">
+                {{ post.author }} - {{ post.created_date }}
+            </span>
+            <hr>
+        </div>
+        {% if post.image %}
+            <div class="card_media_detail">
+                <img src="{{ post.image.url }}" alt="Board Image">
+            </div>
+        {% endif %}
+        <p class="title_description_detail">
+            {{post.text}}
+        </p>
+    </article >
+{% endblock content %}
+{% block side-right %}
+    <section>
+        <h1>{% trans 'News' %}</h1>
+    </section>
+    <section class="posts">
+        <ul>
+        {% for post in posts %}
+            <li>
+                <a href="#">{{ post.author }}</a>
+                <h3><a href="#">{{ post.title }}</a></h3>
+                <p>{{ post.text|truncatechars:100 }}</p>
+            </li>
+        {% endfor %}  
+        </ul>
+    </section>
+{% endblock side-right %}

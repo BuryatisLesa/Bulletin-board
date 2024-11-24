@@ -1,44 +1,75 @@
 {% extends 'default.html' %}
 {% load i18n %}
+
 {% block header %}
 {% endblock header %}
+
 {% block side-left %}
+    <!--Title list categories-->
     <section>
         <h1>{% trans 'Categories' %}</h1>
+        <hr>
     </section>
+
+    <!--Start section list categories-->
     <section>
         <ul class="categories">
         {% for category in categories %}
             <li class="category">
-                <a href="#">{{category.name}}</a>
+                <a href="{% url 'BoardsInCategory' category.pk category.slug  %}">
+                    {{category.name}}
+                </a>
             </li>
         {% endfor %}
         </ul>
     </section>
+    <!--End section list categories-->
+
 {% endblock side-left %}
+
 {% block content %}
+    <!--Start card_board_detail-->
     <article class="card_board_detail">
-        <div class="header_board">
-            <h1 class="card_title_detail">
-                <a href="{% url 'BoardDetail' board.pk board.slug %}">{{board.title}}</a>
-            </h1>
-            <span class="card_author_detail">
-                {{ board.author }} - {{ board.created_date }}
-            </span>
-            <hr>
+        <div class="header-board">
+            <div class="title-detail">
+                <h1 class="card_title_detail">
+                    <a href="{% url 'BoardDetail' board.pk board.slug %}">{{board.title}}</a>
+                </h1>
+                <span class="card_author_detail">
+                    {{ board.author }} - {{ board.created_date }}
+                </span>
+            </div>
+            <div class="button-detail">
+                <!-- edit board -->
+                {% if board.author == user %}
+                <form class="delete-detail" action="{% url 'BoardDelete' board.pk board.slug %}" method="post">
+                    {% csrf_token %}
+                    <button class="green-button" type="submit">Delete</button>
+                </form>
+                <button class="green-button" type="submit">
+                    <a href="{% url 'BoardUpdate' board.pk board.slug %}">
+                        Edit
+                    </a>
+                </button>
+                {% endif %}
+            </div>
         </div>
         {% if board.image %}
-            <div class="card_media_detail">
+            <div class="card-media-detail">
                 <img src="{{ board.image.url }}" alt="Board Image">
             </div>
         {% endif %}
-        <p class="title_description_detail">
-            {{board.text|truncatechars:100}}
-        </p>
-        <button>{% trans 'reply' %}</button><br>
-        <span>{% trans 'Category' %}: {{ board.category }}</span>
+        <div class="card-detail-content">
+            <p class="title_description_detail">
+                {{board.text|safe}}
+            </p>
+            <span>{% trans 'Category' %}: {{ board.category }}</span>
+            <div><button class="green-button">{% trans 'reply' %}</button></div>
+        </div>
     </article >
+    <!--End card_board_detail-->
 {% endblock content %}
+
 {% block side-right %}
     <section>
         <h1>{% trans 'News' %}</h1>
@@ -48,7 +79,7 @@
         {% for post in posts %}
             <li>
                 <a href="#">{{ post.author }}</a>
-                <h3><a href="#">{{ post.title }}</a></h3>
+                <h3><a href="{% url 'PostDetail' post.pk post.slug %}">{{ post.title }}</a></h3>
                 <p>{{ post.text|truncatechars:100 }}</p>
             </li>
         {% endfor %}

@@ -1,0 +1,16 @@
+{% extends 'default.html' %}
+{% block title %}
+{% endblock title %}
+{% block side-left %}
+{% endblock side-left %}
+{% block content %}
+    {% for post in posts %}
+    <div>
+        <h1>{{post.title}}</h1>
+        <p>{{post.text}}</p>
+        <button class="green-button">Redirect</button>
+    </div>
+    {% endfor %}
+{% endblock content %}
+{% block side-right %}
+{% endblock side-right %}
