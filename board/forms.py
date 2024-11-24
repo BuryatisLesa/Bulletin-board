@@ -6,7 +6,8 @@ from ckeditor.widgets import CKEditorWidget
 class BoardCreateForm(forms.ModelForm):
     title = forms.CharField(
         label='Title',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title'}),
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Enter title'}),
     )
     text = forms.CharField(
         label='Text',
@@ -34,12 +35,13 @@ class BoardCreateForm(forms.ModelForm):
         if commit:
             board.save()
         return board
-  
+
 
 class PostCreateForm(forms.ModelForm):
     title = forms.CharField(
         label='Title',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title'}),
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      'placeholder': 'Enter title'}),
     )
     text = forms.CharField(
         label='Text',

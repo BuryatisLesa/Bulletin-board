@@ -48,7 +48,8 @@ class SignUpForm(UserCreationForm):
         # checking if there is a user same username
         if User.objects.filter(username=user.username).exists():
             raise ValidationError(
-                f"Username:'{user.username}' already taken. Please choose another name.")
+                f"Username:'{user.username}' already taken."
+                f"Please choose another name.")
 
         # if commit is True to send mail user
         if commit:

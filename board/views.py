@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.db.models import Q
 from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView
@@ -21,20 +20,25 @@ from .serializers import (
     UserSerializers
     )
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
+# from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 
 
-#<----------------------BoardView--------------------->#
+#  <----------------------BoardView--------------------->  #
 class BoardListView(View):
-    
+
     def get_context_data(self, request):
         boards = Board.objects.all().order_by('-created_date')
         categories = Category.objects.all()
         posts = Post.objects.all()
-        user_responses = ResponseBoard.objects.filter(user=request.user).values_list('board_id', flat=True) if request.user.is_authenticated else []
+        # sort for replay is board
+        user_responses = ResponseBoard.objects.filter(
+            user=request.user).values_list(
+                'board_id', flat=True) if request.user.is_authenticated else []
+        # checking boards at check board.id => user_responses
         for board in boards:
             board.has_response = board.id in user_responses
+
         return {
             'boards': boards,
             'categories': categories,
@@ -50,17 +54,22 @@ class BoardListView(View):
         board_id = request.POST.get('board_id')
         action = request.POST.get('action')
         board = get_object_or_404(Board, id=board_id)
-
+        # when pressed a button create data in model "ResponseBoard"
+        # and send mail author board
         if action == 'replay':
             ResponseBoard.objects.get_or_create(user=request.user, board=board)
             send_mail(
-                subject=f"Replay at {board.title}",
-                message=f"Replay at {board.title}|User:{request.user.username}|Email:{request.user.email}",
+                subject=f'Response from bulletin board "{board.title}"',
+                message=f'Replay at {board.title}'
+                        f'User:{request.user.username}'
+                        f'Email:{request.user.email}',
                 from_email=None,  # Used DEFAULT_FROM_EMAIL
                 recipient_list=[board.author.email],
             )
+        # delete in model "ResponseBoard" data
         elif action == 'unreplay':
-            ResponseBoard.objects.filter(user=request.user, board=board).delete()
+            ResponseBoard.objects.filter(
+                user=request.user, board=board).delete()
         context = self.get_context_data(request)
         return render(request, 'board/index.html', context)
 
@@ -76,10 +85,10 @@ class BoardDetailView(View):
             'categories': categories,
             'posts': posts,
         }
-    
+
     def get(self, request, pk, slug):
         context = self.get_context_data(request, pk, slug)
-        return render(request, 'board/board_detail.html', context) 
+        return render(request, 'board/board_detail.html', context)
 
 
 class BoardCreateView(LoginRequiredMixin, CreateView):
@@ -88,7 +97,9 @@ class BoardCreateView(LoginRequiredMixin, CreateView):
     template_name = 'board/board_create.html'
 
     def get_success_url(self):
-        return reverse_lazy('BoardDetail', kwargs={'pk': self.object.pk, 'slug': self.object.slug})
+        return reverse_lazy(
+            'BoardDetail',
+            kwargs={'pk': self.object.pk, 'slug': self.object.slug})
 
     def form_valid(self, form):
         board = form.save(commit=False, user=self.request.user)
@@ -119,7 +130,7 @@ class BoardUpdateView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         board = form.save(commit=False)
-        if board.author != self.request.user:
+        if board.author != self.request.user:   # author = current user
             form.add_error(None, "You is edit current post.")
             return super().form_invalid(form)
         return super().form_valid(form)
@@ -187,8 +198,7 @@ class BoardViewUser(View):
         return render(request, 'board/announcement.html', context)
 
 
-
-#<----------------------PostView--------------------->#
+#  <----------------------PostView--------------------->  #
 class PostListView(View):
 
     def get_context_data(self, request):
@@ -277,16 +287,21 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'posts/post_detail.html'
     raise_exception = True
     success_url = reverse_lazy('PostList')
-#<----------------------ResponseView--------------------->#
 
-class ResponseListView(View):
+
+#  <----------------------ResponseView--------------------->#
+class ResponseListView(LoginRequiredMixin, View):
 
     def get_context_data(self, request):
         categories = Category.objects.all()
         posts = Post.objects.all()
+        # create colume in DB "responseboard" when will it be save data
+        # Main create for counting responses on one board
         boards = Board.objects.filter(
             author=request.user).annotate(
                 response_count=Count('responseboard'))
+        # All are filtered on bulletin boards,
+        # next select colum "user" and "board"
         my_responses_board = ResponseBoard.objects.filter(
             board__in=boards).select_related('user', 'board')
 
@@ -302,6 +317,7 @@ class ResponseListView(View):
             return redirect('accounts_login')
         context = self.get_context_data(request)
         return render(request, 'board/board_replay.html', context)
+
 
 class ResponseDetailView(View):
 
@@ -323,19 +339,21 @@ class ResponseDetailView(View):
             return redirect('accounts_login')
         context = self.get_context_data(request, pk, slug)
         return render(request, 'board/board_replay_detail.html', context)
-    
+
     @method_decorator(login_required)
     def post(self, request, pk=None, slug=None):
         action = request.POST.get('action')
         board = get_object_or_404(Board, pk=pk, slug=slug)
-        response = ResponseBoard.objects.filter(board=board, user=request.user).first()
-
-        if action == 'accept'and response:
+        response = ResponseBoard.objects.filter(
+            board=board, user=request.user).first()
+        # checkign response in DB and pressed button with value="accept"
+        if action == 'accept' and response:
             try:
                 send_mail(
                     subject=f"Your response for {board.title} was accepted",
                     message=(
-                        f"Your response to the board titled '{board.title}' was accepted.\n"
+                        f"Your response to the board titled '{board.title}'"
+                        "was accepted.\n"
                         f"Details:\n"
                         f"- Board Author: {board.author.username}\n"
                         f"- Board Author Email: {board.author.email}"
@@ -343,7 +361,8 @@ class ResponseDetailView(View):
                     from_email=None,  # Uses DEFAULT_FROM_EMAIL
                     recipient_list=[response.user.email],
                 )
-                messages.success(request, "Response accepted and email sent successfully.")
+                messages.success(request, "Response accepted and email sent"
+                                 "successfully.")
             except Exception as e:
                 messages.error(request, f"Failed to send email: {str(e)}")
         elif action == 'delete_replay':
@@ -360,11 +379,11 @@ class ResponseDetailView(View):
         return render(request, 'board/board_replay_detail.html', context)
 
 
-#<----------------------Viewset--------------------->#
+#  <----------------------Viewset--------------------->  #
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializers
-   
+
     def list(self, request, format=None):
         return Response([])
 

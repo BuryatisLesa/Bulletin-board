@@ -7,7 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
-     #<--------------------BoardsView-------------------->#
+     #  <--------------------BoardsView-------------------->  #
      path('', BoardListView.as_view(), name='BoardList'),
      path('board/detail/<int:pk>/<slug:slug>/',
           BoardDetailView.as_view(), name='BoardDetail'),
@@ -21,7 +21,7 @@ urlpatterns = [
           BoardViewCategory.as_view(), name='BoardsInCategory'),
      path('profile/advertisements/<int:pk>/',
           BoardViewUser.as_view(), name='BoardsUser'),
-     #<--------------------PostsView-------------------->#
+     #  <--------------------PostsView-------------------->  #
      path('posts/list/',
           PostListView.as_view(), name='PostList'),
      path('post/create/',
@@ -32,10 +32,10 @@ urlpatterns = [
           PostDetailView.as_view(), name='PostDetail'),
      path('post/detail/<int:pk>/<slug:slug>/delete/',
           PostDeleteView.as_view(), name='PostDelete'),
-     #<--------------------CategoryView-------------------->#
+     #  <--------------------CategoryView-------------------->  #
      path('board/categories/',
           CategoryListView.as_view(), name='CategoryList'),
-     #<--------------------ResponesView-------------------->#
+     #  <--------------------ResponesView-------------------->  #
      path('profile/replay/',
           ResponseListView.as_view(), name='ResponseList'),
      path('profile/replay/<int:pk>/<slug:slug>/',

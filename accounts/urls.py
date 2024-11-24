@@ -10,5 +10,6 @@ urlpatterns = [
     path("confirm-email/", confirm_email, name="confirm_email"),
     path('login/', login_view, name='accounts_login'),
     path('logout/', logout_view, name='accounts_logout'),
-    path('profile/<int:pk>/change_password/', changePasswordView, name='change_password'),
+    path('profile/<int:pk>/change_password/',
+         changePasswordView, name='change_password'),
     ]

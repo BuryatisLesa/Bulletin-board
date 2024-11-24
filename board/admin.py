@@ -1,10 +1,8 @@
 from django.contrib import admin
 from .models import (
-    Board,
-    Category,
-    ResponseBoard,
-    Post,
+    Board, Category, ResponseBoard, Post,
 )
+
 
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
