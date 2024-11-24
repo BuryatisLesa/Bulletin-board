@@ -72,7 +72,8 @@ class ResponseBoard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='response')
     board = models.ForeignKey('Board', on_delete=models.CASCADE,
-                              related_name='response')
+                              related_name='responseboard')
+    is_accept = models.BooleanField(default=0)
 
     def __str__(self):
         return f'{self.user} - {self.board}'

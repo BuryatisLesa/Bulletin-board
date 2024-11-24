@@ -1,0 +1,70 @@
+{% extends 'default.html' %}
+{% load i18n %}
+
+{% block header %}
+{% endblock header %}
+
+{% block side-left %}
+    <!--Title list categories-->
+    <section>
+        <h1>{% trans 'Categories' %}</h1>
+        <hr>
+    </section>
+
+    <!--Start section list categories-->
+    <section>
+        <ul class="categories">
+        {% for category in categories %}
+            <li class="category">
+                <a href="{% url 'BoardsInCategory' category.pk category.slug  %}">{{category.name}}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+    <!--End section list categories-->
+
+{% endblock side-left %}
+
+{% block content %}
+<h1>{{board.title}}</h1>    
+{% for response in responses %}
+    <div class="replay">
+        <article class="card-replay">
+            <p><strong>{% trans "User:" %}</strong> <a href="#">{{ response.user.username }}</a></p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="board_id" value="{{ response.board.id  }}" />
+                <button name="action" value="accept" class="green-button">{% trans 'Accept' %}</button>
+                <button name="action" value="delete_replay" class="green-button">{% trans 'Delete' %}</button>
+            </form>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </article>
+    </div>
+{% endfor %}
+{% endblock content %}
+
+{% block side-right %}
+    <section>
+        <h1>{% trans 'News' %}</h1>
+        <hr>
+    </section>
+    <section class="posts">
+        <ul>
+        {% for post in posts %}
+            <li>
+                <a href="#">{{ post.author }}</a>
+                <h3><a href="{% url 'PostDetail' post.pk post.slug %}">{{ post.title }}</a></h3>
+                <p>{{ post.text|truncatechars:100 }}</p>
+            </li>
+        {% endfor %} 
+        </ul>
+    </section>
+{% endblock side-right %}

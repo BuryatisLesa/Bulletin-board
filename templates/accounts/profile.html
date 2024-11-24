@@ -9,7 +9,7 @@ Profile
     </section>
     <ul class="categories">
         {% for category in categories %}
-            <li class="category"><a href="#">{{category.name}}</a></li>
+            <li class="category"><a href="{% url 'BoardsInCategory' category.pk category.slug %}">{{category.name}}</a></li>
         {% endfor %}
     </ul>
 {% endblock side-left %}
@@ -30,8 +30,8 @@ Profile
             <li><a href="{% url 'PostCreate' %}">Create News</a></li>
             <li><a href="/admin">Admin Panel</a></li>
         {% endif %}
-        <li><a href="#">My replay</a></li>
-        <li><a href="#">My advertisements</a></li>
+        <li><a href="{% url 'ResponseList' %}">Replay</a></li>
+        <li><a href="{% url 'BoardsUser' user.pk %}">My is announcements</a></li>
     </ul>
 </div>
 {% endblock side-right %}

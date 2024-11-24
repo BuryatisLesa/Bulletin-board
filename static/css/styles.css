@@ -262,7 +262,21 @@ body {
 .card-detail-content{
   flex: 3;
 }
-
+.replay {
+  display: flex;
+  flex-direction: column;  
+  justify-content: flex-start;  
+  align-items: stretch;
+  flex-wrap: nowrap;  
+  background-color: #171919;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  text-align: justify;
+}
 /* Adaptive image and video scaling */
 .card_board_detail img, .card_board_detail video {
   max-width: 100%;

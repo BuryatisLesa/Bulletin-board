@@ -10,7 +10,7 @@
         <ul class="categories">
         {% for category in categories %}
             <li class="category">
-                <a href="#">{{category.name}}</a>
+                <a href="{% url 'BoardsInCategory' category.pk category.slug %}">{{category.name}}</a>
             </li>
         {% endfor %}
         </ul>
@@ -55,7 +55,7 @@
         {% for post in posts %}
             <li>
                 <a href="#">{{ post.author }}</a>
-                <h3><a href="#">{{ post.title }}</a></h3>
+                <h3><a href="{% url 'PostDetail' post.pk post.slug %}">{{ post.title }}</a></h3>
                 <p>{{ post.text|truncatechars:100 }}</p>
             </li>
         {% endfor %}  

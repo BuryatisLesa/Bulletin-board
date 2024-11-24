@@ -27,6 +27,7 @@
 
 {% block content %}
     <!--Start card-board-->
+        <h1>My is Announcement</h1>
     {% for board in boards %}
         <article class="card_board">
             <!-- section info board -->
@@ -41,23 +42,7 @@
                     {{board.text|truncatechars:100|safe}}
                 </p>
                 <span>{% trans 'Category' %}: {{ board.category }}</span>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="board_id" value="{{ board.id }}" />
-                    {% if board.has_response %}
-                        <div>
-                            <button name="action" value="unreplay" class="green-button">
-                                {% trans 'Unreply' %}
-                            </button>
-                        </div>
-                    {% else %}
-                        <div>
-                            <button name="action" value="replay" class="green-button">
-                                {% trans 'Reply' %}
-                            </button>
-                        </div>
-                    {% endif %}
-                </form>
+                <div><button class="green-button">{% trans 'reply' %}</button><br></div>
             </section>
         {% if board.image %}
             <!-- Section media -->
